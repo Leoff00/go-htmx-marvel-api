@@ -16,6 +16,7 @@ clean:
 	go clean
 	rm -f $(TARGET_DIR)/$(BINARY_NAME)
 
+
 release: build run
 
 .PHONY: local build run release
