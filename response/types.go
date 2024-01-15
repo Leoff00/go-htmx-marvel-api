@@ -8,7 +8,7 @@ type Thumbnail struct {
 type Result struct {
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
-	Thumbail    Thumbnail `json:"thumbnail"`
+	Thumbnail   Thumbnail `json:"thumbnail"`
 }
 
 type DataType struct {

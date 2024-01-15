@@ -21,20 +21,22 @@ func handler2(w http.ResponseWriter, r *http.Request) {
 
 	formValue := r.PostFormValue("superhero")
 	marvel := api.DoRequest(formValue)
+
 	var img string
 	var ext string
 	for _, v := range marvel.Data.Results {
-		img, ext = v.Thumbail.Path, v.Thumbail.Extension
+		img, ext = v.Thumbnail.Path, v.Thumbnail.Extension
 	}
 
-	htmlstr := fmt.Sprintf("<img src='%s.%s' alt='Heroes' ", img, ext)
-	tmpl, err := template.New("t").Parse(htmlstr)
+	htmlstr := fmt.Sprintf("%s.%s", img, ext)
+	tmpl := template.Must(template.ParseFiles("index.html"))
 
-	if err != nil {
-		log.Println("Error during parse template image")
-	}
+	// if err != nil {
+	// 	log.Println("Error during parse template...", err)
+	// }
 
-	tmpl.Execute(w, nil)
+	tmpl.ExecuteTemplate(w, "myimg", htmlstr)
+
 }
 
 func main() {
