@@ -9,6 +9,10 @@ import (
 	"github.com/leoff00/go-marvel-api/api"
 )
 
+type ResponseInfo struct {
+	Desc, Url, Alternative string
+}
+
 func handler1(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	tmpl := template.Must(template.ParseFiles("index.html"))
@@ -16,27 +20,19 @@ func handler1(w http.ResponseWriter, r *http.Request) {
 }
 
 func handler2(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "image/jpeg")
 	log.Println("Request received from HTMX")
+	var responseInfo ResponseInfo
 
 	formValue := r.PostFormValue("superhero")
 	marvel := api.DoRequest(formValue)
 
-	var img string
-	var ext string
 	for _, v := range marvel.Data.Results {
-		img, ext = v.Thumbnail.Path, v.Thumbnail.Extension
+		responseInfo.Desc = v.Description
+		responseInfo.Url = fmt.Sprintf("%s.%s", v.Thumbnail.Path, v.Thumbnail.Extension)
+		responseInfo.Alternative = "A Hero"
 	}
-
-	htmlstr := fmt.Sprintf("%s.%s", img, ext)
 	tmpl := template.Must(template.ParseFiles("index.html"))
-
-	// if err != nil {
-	// 	log.Println("Error during parse template...", err)
-	// }
-
-	tmpl.ExecuteTemplate(w, "myimg", htmlstr)
-
+	tmpl.ExecuteTemplate(w, "response_data", responseInfo)
 }
 
 func main() {

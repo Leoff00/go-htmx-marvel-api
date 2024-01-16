@@ -8,21 +8,22 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-  <div class="flex items-center justify-center my-2">
+  <div class="flex items-center justify-center">
   <h1>Marvel Super Heroes Searcher</h1>
   </div>
     <form class="w-full flex m-auto items-center justify-center" 
-        hx-post="/search" hx-target="#hero">
+        hx-post="/search" hx-target="#Hero" hx-swap="innerHTML swap:1s">
           <div class="mx-auto my-4 flex items-center justify-center gap-5 flex-col">
               <label for="superhero" class="block mb-2 text-sm font-medium text-violet-900">Search your Superhero Name. E.g: Thor, Hulk...</label>
               <input type="text" name="superhero" id="superhero" class="text-stone-50 bg-indigo-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray- dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Type your superhero..." >
               <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Search</button>
             </div>
     </form>
-    <div class="m-auto flex items-center justify-center">
-      {{ block "myimg" .}}
-      <img class="m-auto w-40 h-40" id="hero" src="{{.}}" alt="Hero">
-      {{ end }}
+    {{block "response_data" .}}
+    <div id="Hero" class="m-auto flex items-center justify-center flex-col">
+      <img class="w-32 h-32 outline-none" src="{{ .Url }}" alt="{{ .Alternative }}">
+      <p class="text-center w-80">{{ .Desc}}</p>
     </div>
+    {{ end }}
   </body>
 </html>
