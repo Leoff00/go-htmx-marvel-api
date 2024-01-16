@@ -19,11 +19,6 @@
               <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Search</button>
             </div>
     </form>
-    {{block "response_data" .}}
-    <div id="Hero" class="m-auto flex items-center justify-center flex-col">
-      <img class="w-32 h-32 outline-none" src="{{ .Url }}" alt="{{ .Alternative }}">
-      <p class="text-center w-80">{{ .Desc}}</p>
-    </div>
-    {{ end }}
+    {{template "image" .}}
   </body>
 </html>

@@ -14,9 +14,10 @@ type ResponseInfo struct {
 }
 
 func handler1(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	tmpl := template.Must(template.ParseFiles("index.html"))
-	tmpl.Execute(w, nil)
+	tmpl := template.Must(template.ParseFiles("index.html", "./image.html"))
+	if err := tmpl.ExecuteTemplate(w, "index.html", nil); err != nil {
+		log.Println("Error during parse", err)
+	}
 }
 
 func handler2(w http.ResponseWriter, r *http.Request) {
@@ -31,8 +32,11 @@ func handler2(w http.ResponseWriter, r *http.Request) {
 		responseInfo.Url = fmt.Sprintf("%s.%s", v.Thumbnail.Path, v.Thumbnail.Extension)
 		responseInfo.Alternative = "A Hero"
 	}
-	tmpl := template.Must(template.ParseFiles("index.html"))
-	tmpl.ExecuteTemplate(w, "response_data", responseInfo)
+
+	tmpl := template.Must(template.ParseFiles("index.html", "image.html"))
+	if err := tmpl.ExecuteTemplate(w, "response_data", responseInfo); err != nil {
+		log.Println("Cannot load the response info data", err)
+	}
 }
 
 func main() {

@@ -1,0 +1,74 @@
+rendering in a single html file
+
+//way to parse text and render only the img
+// <div class="m-auto flex items-center justify-center">
+// {{ block "myimg" .}}
+// <img class="m-auto w-40 h-40" id="hero" src="{{.}}" alt="Hero">
+// {{ end }}
+// htmlstr := fmt.Sprintf("<img src='%s.%s' alt=	'Heroes' ", img, ext)
+// tmpl, err := template.New("t").Parse(htmlstr)
+
+<div>
+    <button type="submit">Search</button>
+</div>
+
+-------------------------------------------------------------
+rendering in a single html file with props
+
+func handler2(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "image/jpeg")
+	log.Println("Request received from HTMX")
+	formValue := r.PostFormValue("superhero")
+	marvel := api.DoRequest(formValue)
+	var img string
+	var ext string
+	for _, v := range marvel.Data.Results {
+		img, ext = v.Thumbnail.Path, v.Thumbnail.Extension
+	}
+	htmlstr := fmt.Sprintf("%s.%s", img, ext)
+	tmpl := template.Must(template.ParseFiles("index.html"))
+	// if err != nil {
+	// 	log.Println("Error during parse template...", err)
+	// }
+	tmpl.ExecuteTemplate(w, "myimg", htmlstr)
+}
+ <div class="m-auto flex items-center justify-center">
+      {{ block "myimg" .}}
+      <img class="m-auto w-40 h-40" id="hero" src="{{.}}" alt="Hero">
+      {{ end }}
+  </div>
+-------------------------------------------------------------
+
+rendering using template partials 
+func handler2(w http.ResponseWriter, r *http.Request) {
+	log.Println("Request received from HTMX")
+	var responseInfo ResponseInfo
+
+	formValue := r.PostFormValue("superhero")
+	marvel := api.DoRequest(formValue)
+
+	for _, v := range marvel.Data.Results {
+		responseInfo.Desc = v.Description
+		responseInfo.Url = fmt.Sprintf("%s.%s", v.Thumbnail.Path, v.Thumbnail.Extension)
+		responseInfo.Alternative = "A Hero"
+	}
+
+	tmpl := template.Must(template.ParseFiles("index.html", "image.html"))
+	if err := tmpl.ExecuteTemplate(w, "response_data", responseInfo); err != nil {
+		log.Println("Cannot load the response info data", err)
+	}
+}
+
+{{template "image" .}}
+{{ define "image" }}
+  <div id="Hero" class="m-auto flex items-center justify-center flex-col">
+    {{block "response_data" .}}
+    <img class="w-32 h-32 outline-none" src="{{ .Url }}" alt="{{ .Alternative }}">
+      <p class="text-center w-80">{{ .Desc }}</p>
+      {{ end }}
+  </div>
+{{end}}
+-------------------------------------------------------------
+
+
+

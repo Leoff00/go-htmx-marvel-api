@@ -1,0 +1,8 @@
+{{ define "image" }}
+  <div id="Hero" class="m-auto flex items-center justify-center flex-col">
+    {{block "response_data" .}}
+    <img class="w-32 h-32 outline-none" src="{{ .Url }}" alt="{{ .Alternative }}">
+      <p class="text-center w-80">{{ .Desc }}</p>
+      {{ end }}
+  </div>
+{{end}}
